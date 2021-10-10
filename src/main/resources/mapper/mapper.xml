@@ -1,0 +1,28 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.springboot_shiro_jotanglogin.dao.UserDao">
+
+    <!--保存用户-->
+    <!--useGeneratedKeys="true" keyProperty="id" 自动生成主键id-->
+    <insert id="saveUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values(#{id},#{account},#{password},#{salt});
+    </insert>
+
+    <!--根据账号查询用户-->
+    <select id="findByAccount" parameterType="String" resultType="User">
+        select id,account,password,salt from t_user
+        where account = #{account}
+    </select>
+
+    <!--根据账号查询用户的角色-->
+    <select id="findRolesByAccount" parameterType="String" resultType="Role">
+        SELECT t_role.id id,t_role.name name
+        FROM t_user
+                 LEFT JOIN t_user_role
+                           ON t_user.id=t_user_role.userid
+                 LEFT JOIN t_role
+                           ON t_user_role.roleid=t_role.id
+        WHERE t_user.account=#{account}
+    </select>
+
+
+</mapper>
